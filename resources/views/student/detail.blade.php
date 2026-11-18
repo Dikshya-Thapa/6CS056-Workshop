@@ -1,68 +1,53 @@
-@extends('layout')
 
-@section('title', 'Student Details')
+<x-layouts.app title="Student Details">
 
-@section('content')
+    <a class="back-link" href="{{ route('students.index') }}">
+        &larr; Back to students
+    </a>
 
-<div class="page-header">
-    <div>
-        <h1 class="page-title">{{ $student->name }}</h1>
-        <p class="page-description">
-            Student profile details.
-        </p>
-    </div>
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">STUDENT PROFILE</span>
 
-    <div class="actions">
-        <a href="/students/{{ $student->id }}/edit" class="btn btn-warning">
-            Edit Student
+            <h1>{{ $student->name }}</h1>
+
+            <p class="muted">
+                Student #{{ $student->id }}
+            </p>
+        </div>
+
+        <a href="{{ route('students.edit', $student) }}" class="btn">
+            Edit student
         </a>
-
-        <a href="/students" class="btn btn-secondary">
-            Back
-        </a>
-    </div>
-</div>
-
-<div class="card">
-
-    <div class="details-grid">
-
-        <div class="detail-card">
-            <div class="detail-label">Student ID</div>
-            <div class="detail-value">#{{ $student->id }}</div>
-        </div>
-
-        <div class="detail-card">
-            <div class="detail-label">Full Name</div>
-            <div class="detail-value">{{ $student->name }}</div>
-        </div>
-
-        <div class="detail-card">
-            <div class="detail-label">Email</div>
-            <div class="detail-value">{{ $student->email }}</div>
-        </div>
-
-        <div class="detail-card">
-            <div class="detail-label">Phone</div>
-            <div class="detail-value">{{ $student->phone }}</div>
-        </div>
-
-        <div class="detail-card">
-            <div class="detail-label">Date of Birth</div>
-            <div class="detail-value">
-                {{ $student->date_of_birth ?? 'Not provided' }}
-            </div>
-        </div>
-
-        <div class="detail-card">
-            <div class="detail-label">Address</div>
-            <div class="detail-value">
-                {{ $student->address ?? 'Not provided' }}
-            </div>
-        </div>
-
     </div>
 
-</div>
+    <div class="panel detail-grid">
+        <div>
+            <span class="detail-label">Email address</span>
+            <strong>{{ $student->email }}</strong>
+        </div>
 
-@endsection
+        <div>
+            <span class="detail-label">Phone number</span>
+            <strong>{{ $student->phone }}</strong>
+        </div>
+
+        <div>
+            <span class="detail-label">Address</span>
+            <strong>{{ $student->address ?: 'Not provided' }}</strong>
+        </div>
+
+        <div>
+            <span class="detail-label">Date of birth</span>
+            <strong>
+                {{ $student->date_of_birth?->format('d M Y') ?? 'Not provided' }}
+            </strong>
+        </div>
+
+        <div>
+            <span class="detail-label">Age</span>
+            <strong>{{ $student->age ?? 'Not available' }}</strong>
+        </div>
+    </div>
+
+</x-layouts.app>
