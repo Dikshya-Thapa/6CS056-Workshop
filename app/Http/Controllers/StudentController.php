@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
+    // Display all students
     public function index()
     {
         return view('student.list', [
@@ -15,22 +16,28 @@ class StudentController extends Controller
         ]);
     }
 
+    // Display student creation form
     public function create()
     {
         return view('student.create');
     }
 
+    // Store new student
     public function store(Request $request)
     {
-        $student = Student::create(
-            $request->validate($this->rules())
-        );
+        $validated = $request->validate($this->rules());
+
+        $student = Student::create($validated);
 
         return redirect()
             ->route('students.index')
-            ->with('success', "Student {$student->name} created successfully!");
+            ->with(
+                'success',
+                "Student {$student->name} created successfully!"
+            );
     }
 
+    // Display student details
     public function show(Student $student)
     {
         return view('student.detail', [
@@ -38,6 +45,7 @@ class StudentController extends Controller
         ]);
     }
 
+    // Display student edit form
     public function edit(Student $student)
     {
         return view('student.edit', [
@@ -45,17 +53,21 @@ class StudentController extends Controller
         ]);
     }
 
+    // Update existing student
     public function update(Request $request, Student $student)
     {
-        $student->update(
-            $request->validate($this->rules($student))
+        $validated = $request->validate(
+            $this->rules($student)
         );
+
+        $student->update($validated);
 
         return redirect()
             ->route('students.show', $student)
             ->with('success', 'Student updated successfully!');
     }
 
+    // Delete student
     public function destroy(Student $student)
     {
         $student->delete();
@@ -65,23 +77,41 @@ class StudentController extends Controller
             ->with('success', 'Student deleted successfully!');
     }
 
+    // Shared validation rules for create and update
     private function rules(?Student $student = null): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[\pL\s]+$/u',
+            ],
 
             'email' => [
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('students')->ignore($student?->id),
+                Rule::unique('students', 'email')
+                    ->ignore($student?->id),
             ],
 
-            'phone' => 'required|string|max:20',
+            'phone' => [
+                'required',
+                'digits:10',
+            ],
 
-            'address' => 'nullable|string|max:500',
+            'address' => [
+                'nullable',
+                'string',
+                'max:500',
+            ],
 
-            'date_of_birth' => 'nullable|date',
+            'date_of_birth' => [
+                'nullable',
+                'date',
+                'before_or_equal:today',
+            ],
         ];
     }
 }
