@@ -1,107 +1,38 @@
+
 <?php
 
+use App\Http\Controllers\StudentController;
 use App\Models\Course;
-use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\Rule;
 
 /*
 |--------------------------------------------------------------------------
-| Student Routes
+| Student Routes - Workshop 2 MVC
 |--------------------------------------------------------------------------
+|
+| Student CRUD operations are now handled by StudentController.
+| Route::resource automatically creates seven RESTful routes.
+|
 */
 
-Route::get('/student/create', function () {
-    return view('student.create');
-});
-
-Route::get('/students', function () {
-    $students = Student::all();
-
-    return view('student.list', [
-        'students' => $students,
-    ]);
-})->name('students.index');
-
-Route::get('/students/{id}/edit', function ($id) {
-    $student = Student::findOrFail($id);
-
-    return view('student.edit', [
-        'student' => $student,
-    ]);
-});
-
-Route::get('/students/{id}', function ($id) {
-    $student = Student::findOrFail($id);
-
-    return view('student.detail', [
-        'student' => $student,
-    ]);
-});
-
-Route::post('/student', function (Request $request) {
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:students,email',
-        'phone' => 'required|string|max:20',
-        'address' => 'nullable|string|max:500',
-        'date_of_birth' => 'nullable|date',
-    ]);
-
-    $student = Student::create($validated);
-
-    return redirect()
-        ->route('students.index')
-        ->with(
-            'success',
-            "Student {$student->name} created successfully!"
-        );
-});
-
-Route::put('/students/{id}', function (Request $request, $id) {
-    $student = Student::findOrFail($id);
-
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => [
-            'required',
-            'email',
-            'max:255',
-            Rule::unique('students')->ignore($student->id),
-        ],
-        'phone' => 'required|string|max:20',
-        'address' => 'nullable|string|max:500',
-        'date_of_birth' => 'nullable|date',
-    ]);
-
-    $student->update($validated);
-
-    return redirect('/students/' . $student->id)
-        ->with('success', 'Student updated successfully!');
-});
-
-Route::delete('/students/{id}', function ($id) {
-    $student = Student::findOrFail($id);
-
-    $student->delete();
-
-    return redirect()
-        ->route('students.index')
-        ->with('success', 'Student deleted successfully!');
-});
-
+Route::resource('students', StudentController::class);
 
 /*
 |--------------------------------------------------------------------------
-| Course Routes
+| Course Routes - Workshop 1
 |--------------------------------------------------------------------------
+|
+| These routes will be moved to CourseController in Commit 2.
+|
 */
 
+// Display Course Creation Form
 Route::get('/course/create', function () {
     return view('course.create');
 });
 
+// List All Courses
 Route::get('/courses', function () {
     $courses = Course::all();
 
@@ -110,6 +41,7 @@ Route::get('/courses', function () {
     ]);
 })->name('courses.index');
 
+// Edit Course Form
 Route::get('/courses/{id}/edit', function ($id) {
     $course = Course::findOrFail($id);
 
@@ -118,6 +50,7 @@ Route::get('/courses/{id}/edit', function ($id) {
     ]);
 });
 
+// Show Course Details
 Route::get('/courses/{id}', function ($id) {
     $course = Course::findOrFail($id);
 
@@ -126,6 +59,7 @@ Route::get('/courses/{id}', function ($id) {
     ]);
 });
 
+// Store New Course
 Route::post('/course', function (Request $request) {
     $validated = $request->validate([
         'name' => 'required|string|max:255',
@@ -148,6 +82,7 @@ Route::post('/course', function (Request $request) {
         );
 });
 
+// Update Existing Course
 Route::put('/courses/{id}', function (Request $request, $id) {
     $course = Course::findOrFail($id);
 
@@ -168,6 +103,7 @@ Route::put('/courses/{id}', function (Request $request, $id) {
         ->with('success', 'Course updated successfully!');
 });
 
+// Delete Course
 Route::delete('/courses/{id}', function ($id) {
     $course = Course::findOrFail($id);
 
