@@ -1,116 +1,38 @@
-@extends('layout')
 
-@section('title', 'Create Course')
+<x-layouts.app title="Create Course">
 
-@section('content')
-
-<div class="page-header">
-    <div>
-        <h1 class="page-title">Create Course</h1>
-
-        <p class="page-description">
-            Add a new course to your institute.
-        </p>
-    </div>
-
-    <a href="/courses" class="btn btn-secondary">
-        ← Back
+    <a class="back-link" href="{{ route('courses.index') }}">
+        &larr; Back to courses
     </a>
-</div>
 
-<div class="card">
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">COURSES</span>
+            <h1>Add a course</h1>
 
-@if($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-<form action="/course" method="POST">
-
-    @csrf
-
-    <div class="form-grid">
-
-        <div class="form-group">
-            <label class="form-label">Course Name</label>
-
-            <input
-                class="form-control"
-                type="text"
-                name="name"
-                value="{{ old('name') }}"
-            >
+            <p class="muted">
+                Create a new training course.
+            </p>
         </div>
-
-        <div class="form-group">
-            <label class="form-label">Duration (weeks)</label>
-
-            <input
-                class="form-control"
-                type="number"
-                name="duration"
-                value="{{ old('duration') }}"
-            >
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Fee</label>
-
-            <input
-                class="form-control"
-                type="number"
-                step="0.01"
-                name="fee"
-                value="{{ old('fee') }}"
-            >
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Difficulty</label>
-
-            <select class="form-control" name="difficulty">
-                <option value="">Select difficulty</option>
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-            </select>
-        </div>
-
-        <div class="form-group full">
-            <label class="form-label">Description</label>
-
-            <textarea
-                class="form-control"
-                name="description"
-            >{{ old('description') }}</textarea>
-        </div>
-
-        <div class="form-group full">
-            <label class="checkbox-row">
-                <input type="checkbox" name="is_active" value="1">
-                Active Course
-            </label>
-        </div>
-
     </div>
 
-    <div class="form-actions">
-        <button class="btn btn-primary">
-            Create Course
-        </button>
+    <div class="panel form-panel">
+        <form method="POST" action="{{ route('courses.store') }}">
+            @csrf
 
-        <a href="/courses" class="btn btn-secondary">
-            Cancel
-        </a>
+            @include('course._form')
+
+            <div class="form-actions">
+                <button class="btn" type="submit">
+                    Create course
+                </button>
+
+                <a class="btn btn-secondary"
+                   href="{{ route('courses.index') }}">
+                    Cancel
+                </a>
+            </div>
+        </form>
     </div>
 
-</form>
-
-</div>
-
-@endsection
+</x-layouts.app>
